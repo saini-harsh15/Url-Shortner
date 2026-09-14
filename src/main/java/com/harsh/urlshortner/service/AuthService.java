@@ -4,6 +4,7 @@ package com.harsh.urlshortner.service;
 import com.harsh.urlshortner.dto.LoginRequest;
 import com.harsh.urlshortner.dto.RegisterRequest;
 import com.harsh.urlshortner.entity.User;
+import com.harsh.urlshortner.exception.InvalidCredentialsException;
 import com.harsh.urlshortner.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class AuthService {
     public User register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already registered");
+            throw new InvalidCredentialsException("Email already registered");
         }
 
         String hashedPassword =
@@ -50,13 +51,13 @@ public class AuthService {
         User user = userRepository
                 .findByEmail(request.getEmail())
                 .orElseThrow(() ->
-                        new RuntimeException("Invalid email or password"));
+                        new InvalidCredentialsException("Invalid email or password"));
 
         if (!passwordEncoder.matches(
                 request.getPassword(),
                 user.getPassword())) {
 
-            throw new RuntimeException("Invalid email or password");
+            throw new InvalidCredentialsException("Invalid email or password");
         }
 
         return jwtService.generateToken(

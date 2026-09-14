@@ -4,6 +4,7 @@ import com.harsh.urlshortner.dto.CreateUrlRequest;
 import com.harsh.urlshortner.dto.UrlResponse;
 import com.harsh.urlshortner.entity.Url;
 import com.harsh.urlshortner.entity.User;
+import com.harsh.urlshortner.exception.ResourceNotFoundException;
 import com.harsh.urlshortner.repository.UrlRepository;
 import com.harsh.urlshortner.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,7 @@ public class UrlService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() ->
-                        new RuntimeException("User not found"));
+                        new ResourceNotFoundException("User not found"));
 
         String shortCode = generateUniqueShortCode();
 
@@ -81,5 +82,40 @@ public class UrlService {
         } while (urlRepository.existsByShortCode(shortCode));
 
         return shortCode;
+    }
+
+    public UrlResponse getUrl(
+            String shortCode,
+            Long userId) {
+
+        Url url = urlRepository
+                .findByShortCodeAndUserId(shortCode, userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("URL not found"));
+
+        String shortUrl =
+                "http://localhost:8080/" + url.getShortCode();
+
+        return new UrlResponse(
+                url.getId(),
+                url.getOriginalUrl(),
+                url.getShortCode(),
+                shortUrl,
+                url.getCreatedAt(),
+                url.getExpiresAt(),
+                url.getClickCount()
+        );
+    }
+
+    public void deleteUrl(
+            String shortCode,
+            Long userId) {
+
+        Url url = urlRepository
+                .findByShortCodeAndUserId(shortCode, userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("URL not found"));
+
+        urlRepository.delete(url);
     }
 }

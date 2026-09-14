@@ -1,6 +1,7 @@
 package com.harsh.urlshortner.controller;
 
 import com.harsh.urlshortner.entity.Url;
+import com.harsh.urlshortner.exception.ResourceNotFoundException;
 import com.harsh.urlshortner.repository.UrlRepository;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class RedirectController {
 
         Url url = urlRepository.findByShortCode(shortCode)
                 .orElseThrow(() ->
-                        new RuntimeException("Short URL not found"));
+                        new ResourceNotFoundException("Short URL not found"));
 
         if (url.getExpiresAt() != null &&
                 url.getExpiresAt().isBefore(LocalDateTime.now())) {

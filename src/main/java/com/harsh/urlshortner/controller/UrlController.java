@@ -30,4 +30,30 @@ public class UrlController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{shortCode}")
+    public ResponseEntity<UrlResponse> getUrl(
+            @PathVariable String shortCode,
+            Authentication authentication) {
+
+        Long userId = Long.parseLong(authentication.getName());
+
+        UrlResponse response =
+                urlService.getUrl(shortCode, userId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{shortCode}")
+    public ResponseEntity<Void> deleteUrl(
+            @PathVariable String shortCode,
+            Authentication authentication) {
+
+        Long userId = Long.parseLong(authentication.getName());
+
+        urlService.deleteUrl(shortCode, userId);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }
