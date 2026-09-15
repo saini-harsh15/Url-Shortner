@@ -34,8 +34,7 @@ public class RedirectController {
         }
 
         // Increment click count
-        url.setClickCount(url.getClickCount() + 1);
-        urlRepository.save(url);
+        urlRepository.incrementClickCount(url.getId());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(

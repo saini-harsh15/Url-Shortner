@@ -10,6 +10,7 @@ import com.harsh.urlshortner.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -117,5 +118,22 @@ public class UrlService {
                         new ResourceNotFoundException("URL not found"));
 
         urlRepository.delete(url);
+    }
+
+    public List<UrlResponse> getUserUrls(Long userId) {
+
+        List<Url> urls = urlRepository.findAllByUserId(userId);
+
+        return urls.stream()
+                .map(url -> new UrlResponse(
+                        url.getId(),
+                        url.getOriginalUrl(),
+                        url.getShortCode(),
+                        "http://localhost:8080/" + url.getShortCode(),
+                        url.getCreatedAt(),
+                        url.getExpiresAt(),
+                        url.getClickCount()
+                ))
+                .toList();
     }
 }

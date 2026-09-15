@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/urls")
 public class UrlController {
@@ -54,6 +56,17 @@ public class UrlController {
         urlService.deleteUrl(shortCode, userId);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UrlResponse>> getUserUrls(
+            Authentication authentication) {
+
+        Long userId = Long.parseLong(authentication.getName());
+
+        List<UrlResponse> urls = urlService.getUserUrls(userId);
+
+        return ResponseEntity.ok(urls);
     }
 
 }

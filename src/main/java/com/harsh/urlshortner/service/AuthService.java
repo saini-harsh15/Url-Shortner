@@ -4,6 +4,7 @@ package com.harsh.urlshortner.service;
 import com.harsh.urlshortner.dto.LoginRequest;
 import com.harsh.urlshortner.dto.RegisterRequest;
 import com.harsh.urlshortner.entity.User;
+import com.harsh.urlshortner.exception.ConflictException;
 import com.harsh.urlshortner.exception.InvalidCredentialsException;
 import com.harsh.urlshortner.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +32,7 @@ public class AuthService {
     public User register(RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new InvalidCredentialsException("Email already registered");
+            throw new ConflictException("Email already registered");
         }
 
         String hashedPassword =
