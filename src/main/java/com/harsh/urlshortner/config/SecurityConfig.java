@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class SecurityConfig {
@@ -28,7 +29,7 @@ public class SecurityConfig {
     @Bean
     public SecretKey jwtSecretKey() {
         return new SecretKeySpec(
-                jwtSecret.getBytes(),
+                jwtSecret.getBytes(StandardCharsets.UTF_8),
                 "HmacSHA256"
         );
     }
@@ -54,14 +55,56 @@ public class SecurityConfig {
             HttpSecurity http) throws Exception {
 
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/urls/**").authenticated()
-                        .anyRequest().permitAll()
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers(
+                                "/auth/**",
+                                "/api/**"
+                        )
                 )
+
+                .authorizeHttpRequests(auth -> auth
+
+                        // Public pages
+                        .requestMatchers(
+                                "/login",
+                                "/register",
+                                "/css/**",
+                                "/js/**"
+                        ).permitAll()
+
+                        // Public REST authentication
+                        .requestMatchers("/auth/**").permitAll()
+
+                        // Protected REST API
+                        .requestMatchers("/api/urls/**").authenticated()
+
+                        // Protected Thymeleaf dashboard
+                        .requestMatchers("/dashboard").authenticated()
+
+                        // Public short URL redirect
+                        .requestMatchers("/{shortCode}").permitAll()
+
+                        .anyRequest().authenticated()
+                )
+
+                // JWT authentication for REST API
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt -> {})
+                )
+
+                // Session authentication for Thymeleaf
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/dashboard", true)
+                        .failureUrl("/login?error=true")
+                        .permitAll()
+                )
+
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout=true")
+                        .permitAll()
                 );
 
         return http.build();

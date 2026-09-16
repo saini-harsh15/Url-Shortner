@@ -4,9 +4,11 @@ import com.harsh.urlshortner.dto.CreateUrlRequest;
 import com.harsh.urlshortner.dto.UrlResponse;
 import com.harsh.urlshortner.entity.Url;
 import com.harsh.urlshortner.entity.User;
+import com.harsh.urlshortner.exception.BadRequestException;
 import com.harsh.urlshortner.exception.ResourceNotFoundException;
 import com.harsh.urlshortner.repository.UrlRepository;
 import com.harsh.urlshortner.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,6 +20,9 @@ public class UrlService {
 
     private final UrlRepository urlRepository;
     private final UserRepository userRepository;
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     private static final String CHARACTERS =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -39,6 +44,16 @@ public class UrlService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
 
+
+        if (request.getExpiresAt() != null &&
+                request.getExpiresAt().isBefore(LocalDateTime.now())) {
+
+            throw new BadRequestException(
+                    "Expiration time must be in the future"
+            );
+        }
+
+
         String shortCode = generateUniqueShortCode();
 
         Url url = new Url();
@@ -52,8 +67,7 @@ public class UrlService {
 
         Url savedUrl = urlRepository.save(url);
 
-        String shortUrl =
-                "http://localhost:8080/" + savedUrl.getShortCode();
+        String shortUrl = baseUrl + "/" + savedUrl.getShortCode();
 
         return new UrlResponse(
                 savedUrl.getId(),
@@ -95,7 +109,7 @@ public class UrlService {
                         new ResourceNotFoundException("URL not found"));
 
         String shortUrl =
-                "http://localhost:8080/" + url.getShortCode();
+                baseUrl + "/" + url.getShortCode();
 
         return new UrlResponse(
                 url.getId(),
@@ -129,7 +143,7 @@ public class UrlService {
                         url.getId(),
                         url.getOriginalUrl(),
                         url.getShortCode(),
-                        "http://localhost:8080/" + url.getShortCode(),
+                        baseUrl + "/" + url.getShortCode(),
                         url.getCreatedAt(),
                         url.getExpiresAt(),
                         url.getClickCount()

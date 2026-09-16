@@ -1,0 +1,368 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
+
+/* ---------- Tokens ---------- */
+
+:root {
+    --ink: #14151A;
+    --ink-soft: #5B5F6B;
+    --paper: #F8F7F4;
+    --surface: #FFFFFF;
+    --line: #E4E2DC;
+
+    --accent: #0057FF;
+    --accent-soft: #EAF0FF;
+    --accent-ink: #FFFFFF;
+
+    --success: #0F9D63;
+    --success-soft: #E8F7EF;
+
+    --danger: #D6432F;
+    --danger-soft: #FDECE9;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    --ease: 150ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --ease: 0ms;
+    }
+}
+
+
+/* ---------- Base ---------- */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 15px;
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    width: 90%;
+    max-width: 1080px;
+    margin: 48px auto;
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+
+/* ---------- Navbar ---------- */
+
+.navbar {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 20px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(248, 247, 244, 0.08);
+}
+
+.navbar h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.navbar h1::before {
+    content: "/";
+    color: var(--accent);
+    margin-right: 6px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+}
+
+.logout-button {
+    background: transparent;
+    color: #F2B8AF;
+    border: 1px solid rgba(214, 67, 47, 0.5);
+    padding: 8px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 500;
+    transition: background var(--ease), color var(--ease);
+}
+
+.logout-button:hover {
+    background: var(--danger);
+    color: white;
+    border-color: var(--danger);
+    opacity: 1;
+}
+
+
+/* ---------- Cards ---------- */
+
+.card {
+    background: var(--surface);
+    padding: 28px;
+    margin-bottom: 22px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+    position: relative;
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* The create-URL card is the primary action on the page; mark it as such */
+.container .card:first-of-type {
+    border-top: 3px solid var(--accent);
+    padding-top: 26px;
+}
+
+
+/* ---------- Forms ---------- */
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--ink-soft);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: var(--font-mono);
+    color: var(--ink);
+    background: var(--paper);
+    transition: border-color var(--ease), box-shadow var(--ease);
+}
+
+.form-group input::placeholder {
+    color: #9CA0AB;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--surface);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+
+/* ---------- Buttons ---------- */
+
+.primary-button {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    padding: 11px 20px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform var(--ease), opacity var(--ease);
+}
+
+.primary-button:hover {
+    opacity: 0.92;
+}
+
+.primary-button:active {
+    transform: scale(0.98);
+}
+
+.copy-button {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid transparent;
+    padding: 6px 11px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    margin-left: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    transition: background var(--ease);
+}
+
+.copy-button:hover {
+    background: #DCE7FF;
+}
+
+.delete-button {
+    background: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger-soft);
+    padding: 6px 11px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 500;
+    transition: background var(--ease), color var(--ease);
+}
+
+.delete-button:hover {
+    background: var(--danger);
+    color: white;
+    border-color: var(--danger);
+}
+
+
+/* ---------- URL Table ---------- */
+
+.table-container {
+    overflow-x: auto;
+}
+
+.url-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.url-table th,
+.url-table td {
+    padding: 13px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    font-size: 14px;
+}
+
+.url-table th {
+    background: var(--paper);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+}
+
+.url-table tbody tr:hover {
+    background: #FBFAF8;
+}
+
+.url-table a {
+    color: var(--accent);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.url-table a:hover {
+    text-decoration: underline;
+}
+
+
+/* ---------- Validation ---------- */
+
+.error {
+    color: var(--danger);
+    font-size: 13px;
+    margin-top: 6px;
+}
+
+
+/* ---------- Auth Pages ---------- */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--paper);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--surface);
+    padding: 36px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    box-shadow: 0 12px 32px rgba(20, 21, 26, 0.06);
+}
+
+.auth-card h1 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 28px;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.auth-card h1::before {
+    content: "/";
+    color: var(--accent);
+    margin-right: 4px;
+    font-family: var(--font-mono);
+}
+
+.auth-card .primary-button {
+    width: 100%;
+    margin-top: 6px;
+    padding: 12px;
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 13px;
+    color: var(--ink-soft);
+}
+
+.auth-link a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}
+
+.success-message {
+    color: #0B7A4E;
+    background: var(--success-soft);
+    border-left: 3px solid var(--success);
+    padding: 10px 14px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+.error-message {
+    color: var(--danger);
+    background: var(--danger-soft);
+    border-left: 3px solid var(--danger);
+    padding: 10px 14px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
