@@ -208,6 +208,7 @@ body {
     font-size: 12px;
     font-weight: 500;
     transition: background var(--ease);
+    flex-shrink: 0;
 }
 
 .copy-button:hover {
@@ -263,6 +264,22 @@ body {
 
 .url-table tbody tr:hover {
     background: #FBFAF8;
+}
+
+/* Fix: short URL link + copy button were stacking on long URLs
+   because they're two inline elements in the same cell with no
+   layout to keep them on one row. */
+.url-table td:nth-child(2) {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.url-table td:nth-child(2) a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
 }
 
 .url-table a {
