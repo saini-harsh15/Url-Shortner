@@ -9,9 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @RestController
 public class RedirectController {
+
+    private static final ZoneId APP_ZONE =
+            ZoneId.of("Asia/Kolkata");
 
     private final UrlRepository urlRepository;
 
@@ -25,18 +29,25 @@ public class RedirectController {
 
         Url url = urlRepository.findByShortCode(shortCode)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Short URL not found"));
+                        new ResourceNotFoundException(
+                                "Short URL not found"));
+
+        LocalDateTime now =
+                LocalDateTime.now(APP_ZONE);
 
         if (url.getExpiresAt() != null &&
-                url.getExpiresAt().isBefore(LocalDateTime.now())) {
+                !url.getExpiresAt().isAfter(now)) {
 
-            return ResponseEntity.status(HttpStatus.GONE).build();
+            return ResponseEntity
+                    .status(HttpStatus.GONE)
+                    .build();
         }
 
         // Increment click count
         urlRepository.incrementClickCount(url.getId());
 
         HttpHeaders headers = new HttpHeaders();
+
         headers.setLocation(
                 java.net.URI.create(url.getOriginalUrl())
         );
