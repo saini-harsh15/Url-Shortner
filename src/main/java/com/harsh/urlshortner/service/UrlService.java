@@ -12,12 +12,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
 
 @Service
 public class UrlService {
 
+    private static final ZoneId APP_ZONE =
+        ZoneId.of("Asia/Kolkata");
+    
     private final UrlRepository urlRepository;
     private final UserRepository userRepository;
 
@@ -36,49 +40,51 @@ public class UrlService {
         this.userRepository = userRepository;
     }
 
-    public UrlResponse createUrl(
-            CreateUrlRequest request,
-            Long userId) {
+   public UrlResponse createUrl(
+        CreateUrlRequest request,
+        Long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
+    User user = userRepository.findById(userId)
+            .orElseThrow(() ->
+                    new ResourceNotFoundException("User not found"));
 
+    LocalDateTime now =
+            LocalDateTime.now(APP_ZONE);
 
-        if (request.getExpiresAt() != null &&
-                request.getExpiresAt().isBefore(LocalDateTime.now())) {
+    if (request.getExpiresAt() != null &&
+            !request.getExpiresAt().isAfter(now)) {
 
-            throw new BadRequestException(
-                    "Expiration time must be in the future"
-            );
-        }
-
-
-        String shortCode = generateUniqueShortCode();
-
-        Url url = new Url();
-
-        url.setOriginalUrl(request.getOriginalUrl());
-        url.setShortCode(shortCode);
-        url.setCreatedAt(LocalDateTime.now());
-        url.setExpiresAt(request.getExpiresAt());
-        url.setClickCount(0L);
-        url.setUser(user);
-
-        Url savedUrl = urlRepository.save(url);
-
-        String shortUrl = baseUrl + "/" + savedUrl.getShortCode();
-
-        return new UrlResponse(
-                savedUrl.getId(),
-                savedUrl.getOriginalUrl(),
-                savedUrl.getShortCode(),
-                shortUrl,
-                savedUrl.getCreatedAt(),
-                savedUrl.getExpiresAt(),
-                savedUrl.getClickCount()
+        throw new BadRequestException(
+                "Expiration time must be in the future"
         );
     }
+
+    String shortCode = generateUniqueShortCode();
+
+    Url url = new Url();
+
+    url.setOriginalUrl(request.getOriginalUrl());
+    url.setShortCode(shortCode);
+    url.setCreatedAt(now);
+    url.setExpiresAt(request.getExpiresAt());
+    url.setClickCount(0L);
+    url.setUser(user);
+
+    Url savedUrl = urlRepository.save(url);
+
+    String shortUrl =
+            baseUrl + "/" + savedUrl.getShortCode();
+
+    return new UrlResponse(
+            savedUrl.getId(),
+            savedUrl.getOriginalUrl(),
+            savedUrl.getShortCode(),
+            shortUrl,
+            savedUrl.getCreatedAt(),
+            savedUrl.getExpiresAt(),
+            savedUrl.getClickCount()
+    );
+}
 
     private String generateUniqueShortCode() {
 
