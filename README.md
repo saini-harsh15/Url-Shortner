@@ -7,7 +7,7 @@ A production-ready, full-stack URL shortening service built with **Java 21** and
 
 ### 🌐 Live Demo & Repository
 
-- **Live Application:** [https://urlshortner-insi.onrender.com/](https://urlshortner-insi.onrender.com/)
+- **Live Application:** [https://urlshortner-insi.onrender.com/](https://urlshortner-insi.onrender.com/login)
 - **GitHub Repository:** [https://github.com/saini-harsh15/Url-Shortner](https://github.com/saini-harsh15/Url-Shortner)
 
 ---
